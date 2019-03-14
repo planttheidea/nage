@@ -1,4 +1,4 @@
-import create from '../src/Pule';
+import create from '../src';
 
 const pool = create({
   onRelease(item) {
