@@ -2,9 +2,9 @@ import create from '../src';
 
 const pool = create({
   onRelease(item) {
-    for (const key in item) {
+    Object.keys(item).forEach((key) => {
       Reflect.deleteProperty(item, key);
-    }
+    });
   },
 });
 

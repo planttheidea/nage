@@ -47,14 +47,20 @@ module.exports = {
   },
 
   output: {
-    filename: 'pule.js',
-    library: 'pule',
+    filename: 'nage.js',
+    library: 'nage',
     libraryTarget: 'umd',
     path: path.resolve(ROOT, 'dist'),
     umdNamedDefine: true,
   },
 
-  plugins: [new webpack.EnvironmentPlugin(['NODE_ENV']), new HtmlWebpackPlugin()],
+  plugins: [
+    new webpack.EnvironmentPlugin(['NODE_ENV']),
+    new webpack.DefinePlugin({
+      DEV: process.env.NODE_ENV !== 'production',
+    }),
+    new HtmlWebpackPlugin(),
+  ],
 
   resolve: {
     extensions: ['.ts', '.js', '.tsx', '.jsx'],

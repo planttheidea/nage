@@ -1,7 +1,8 @@
 {
   "author": "tony.quetano@planttheidea.com",
+  "browser": "dist/nage.js",
   "bugs": {
-    "url": "https://github.com/planttheidea/pule/issues"
+    "url": "https://github.com/planttheidea/nage/issues"
   },
   "description": "Efficient, tiny object pool",
   "devDependencies": {
@@ -34,18 +35,19 @@
     "webpack-cli": "^3.2.0",
     "webpack-dev-server": "^3.1.5"
   },
-  "homepage": "https://github.com/planttheidea/pule#readme",
+  "homepage": "https://github.com/planttheidea/nage#readme",
   "keywords": [
     "object",
     "pool",
     "memory"
   ],
   "license": "MIT",
-  "main": "dist/pule.js",
-  "name": "pule",
+  "main": "dist/nage.cjs.js",
+  "module": "dist/nage.esm.js",
+  "name": "nage",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/planttheidea/pule.git"
+    "url": "git+https://github.com/planttheidea/nage.git"
   },
   "scripts": {
     "benchmark": "npm run dist -- --no-comments && node benchmark/index.js",
