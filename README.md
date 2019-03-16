@@ -51,7 +51,7 @@ type Entry = {
   [index: number]: any;
 };
 
-type Creator = (...args: any[]) => Entry;
+type Creator = () => Entry;
 
 type Handler = (entry: Entry) => void;
 

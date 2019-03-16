@@ -8,7 +8,7 @@ declare namespace Nage {
     [index: number]: any;
   };
 
-  export type Creator = (...args: any[]) => Entry;
+  export type Creator = () => Entry;
 
   export type Handler = (entry: Entry) => void;
 
