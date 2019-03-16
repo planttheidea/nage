@@ -1,4 +1,4 @@
-/* globals afterEach,beforeEach,describe,expect,it */
+/* globals afterEach,beforeEach,describe,expect,it,jest */
 
 import createNage from '../src';
 import Nage from '../src/NagePool';
@@ -121,14 +121,54 @@ describe('default pool', () => {
       initialSize: 3,
     });
 
-    const object = pool.reserve();
+    expect(pool.stack).toEqual([{}, {}, {}]);
+    expect(pool.size).toEqual(3);
+    expect(pool.reserved).toEqual(0);
+    expect(pool.available).toEqual(3);
 
-    pool.release(object);
+    pool.reserve();
+
+    expect(pool.stack).toEqual([{}, {}]);
+    expect(pool.size).toEqual(3);
+    expect(pool.reserved).toEqual(1);
+    expect(pool.available).toEqual(2);
 
     pool.reset();
 
     expect(pool.stack).toEqual([{}, {}, {}]);
     expect(pool.size).toEqual(3);
+    expect(pool.reserved).toEqual(0);
+    expect(pool.available).toEqual(3);
+  });
+
+  it('will reset the pool of objects when there is an onReset handler', () => {
+    const onReset = jest.fn();
+
+    const pool = createNage({
+      onReset,
+    });
+
+    expect(pool.stack).toEqual([{}]);
+    expect(pool.size).toEqual(1);
+    expect(pool.reserved).toEqual(0);
+    expect(pool.available).toEqual(1);
+
+    pool.reserve();
+
+    expect(pool.stack).toEqual([]);
+    expect(pool.size).toEqual(1);
+    expect(pool.reserved).toEqual(1);
+    expect(pool.available).toEqual(0);
+
+    pool.reset();
+
+    expect(pool.stack).toEqual([{}]);
+    expect(pool.size).toEqual(1);
+    expect(pool.reserved).toEqual(0);
+    expect(pool.available).toEqual(1);
+
+    expect(onReset).toHaveBeenCalledTimes(1);
+    expect(onReset).toHaveBeenCalledWith(pool.stack);
   });
 });
 
@@ -318,6 +358,11 @@ describe('error states', () => {
   it('will throw when onReserve is not a function', () => {
     // @ts-ignore
     expect(() => createNage({ onReserve: 'foo' })).toThrow();
+  });
+
+  it('will throw when onReset is not a function', () => {
+    // @ts-ignore
+    expect(() => createNage({ onReset: 'foo' })).toThrow();
   });
 
   it('will throw an error if the entry being released is not from the pool', () => {

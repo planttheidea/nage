@@ -12,6 +12,7 @@ Efficient, tiny object pool
   - [initialSize](#initialsize)
   - [onReserve](#onreserve)
   - [onRelease](#onrelease)
+  - [onReset](#onreset)
 - [Pool methods](#pool-methods)
   - [reserve](#reserve)
   - [release](#release)
@@ -121,6 +122,20 @@ const pool = nage({
 ```
 
 Handler called for a newly-released item back into the pool, called with the object just prior to being added to the stack. This method is handy to perform cleanup of the object in preparation for future use.
+
+#### onReset
+
+```typescript
+const pool = nage({
+  onReset(stack: Nage.Entry[]) {
+    stack.forEach((entry: Nage.Entry) => {
+      console.log(entry);
+    });
+  },
+});
+```
+
+Handler called just prior to the stack being [`reset`](#reset). This method is handy if you need to take a snapshot of the existing pool prior to it being purged and repopulated.
 
 ## Pool methods
 

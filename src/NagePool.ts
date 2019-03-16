@@ -35,6 +35,7 @@ class NagePool {
   create: Nage.Creator;
   onRelease: Nage.Handler;
   onReserve: Nage.Handler;
+  onReset: Nage.ResetHandler;
   stack: Nage.Entry[];
 
   /**
@@ -51,6 +52,7 @@ class NagePool {
     initialSize = 1,
     onRelease,
     onReserve,
+    onReset,
   }: Nage.Options = EMPTY_OBJECT) {
     this.entries = new WeakMap();
     this.initialSize = initialSize;
@@ -78,6 +80,14 @@ class NagePool {
         this.onReserve = onReserve;
       } else if (DEV) {
         throw new Error('onReserve must be a function');
+      }
+    }
+
+    if (onReset) {
+      if (typeof onReset === 'function') {
+        this.onReset = onReset;
+      } else if (DEV) {
+        throw new Error('onReset must be a function');
       }
     }
 
@@ -178,6 +188,10 @@ class NagePool {
   reset() {
     const { length } = this.stack;
 
+    if (this.onReset) {
+      this.onReset(this.stack);
+    }
+
     if (length) {
       for (let index = 0; index < length; ++index) {
         this.entries.delete(this.stack[index]);
@@ -188,10 +202,8 @@ class NagePool {
 
     this.generated = 0;
 
-    if (this.initialSize) {
-      for (let index = 0; index < this.initialSize; ++index) {
-        this.stack.push(this.generate());
-      }
+    for (let index = 0; index < this.initialSize; ++index) {
+      this.stack.push(this.generate());
     }
   }
 }

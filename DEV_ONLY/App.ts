@@ -1,13 +1,17 @@
 import nage from '../src';
 
+console.time();
+
 const pool = nage({
-  initialSize: 100,
+  initialSize: 10000,
   onRelease(item) {
     Object.keys(item).forEach((key) => {
       Reflect.deleteProperty(item, key);
     });
   },
 });
+
+console.timeEnd();
 
 console.log(pool);
 
