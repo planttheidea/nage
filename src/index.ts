@@ -1,16 +1,16 @@
-import Nage from './Nage';
+import NagePool from './NagePool';
 
 /**
- * @function createNage
+ * @function nage
  *
  * @description
- * builder for Nage instances
+ * builder for NagePool instances
  *
  * @param options the options to create the pool with
  * @returns the Nage instance
  */
-function createNage(options?: Options) {
-  return new Nage(options);
+function nage(options?: Nage.Options) {
+  return new NagePool(options);
 }
 
-export default createNage;
+export default nage;

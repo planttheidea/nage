@@ -1,6 +1,6 @@
-import create from '../src';
+import nage from '../src';
 
-const pool = create({
+const pool = nage({
   initialSize: 100,
   onRelease(item) {
     Object.keys(item).forEach((key) => {
@@ -40,4 +40,4 @@ console.log(pool.size, [...pool.stack]);
 
 pool.reset();
 
-console.log(pool.size, pool);
+// console.log(pool.size, pool);

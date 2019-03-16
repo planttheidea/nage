@@ -27,14 +27,14 @@ function getEmptyObject() {
  *
  * @classdesc pool objects, generating new ones only when necessary
  */
-class Nage {
-  entries: WeakMap<Entry, string>;
+class NagePool {
+  entries: WeakMap<Nage.Entry, string>;
   initialSize: number;
   name: string;
-  create: Creator;
-  onRelease: Handler;
-  onReserve: Handler;
-  stack: Entry[];
+  create: Nage.Creator;
+  onRelease: Nage.Handler;
+  onReserve: Nage.Handler;
+  stack: Nage.Entry[];
 
   /**
    * @constructor
@@ -50,7 +50,7 @@ class Nage {
     initialSize = 0,
     onRelease,
     onReserve,
-  }: Options = EMPTY_OBJECT) {
+  }: Nage.Options = EMPTY_OBJECT) {
     this.entries = new WeakMap();
     this.initialSize = initialSize;
     // eslint-disable-next-line no-bitwise
@@ -122,7 +122,7 @@ class Nage {
    *
    * @param entry the entry to release back to the pool
    */
-  release(entry: Entry) {
+  release(entry: Nage.Entry) {
     const { onRelease, stack } = this;
 
     if (this.entries.get(entry) !== this.name) {
@@ -168,16 +168,22 @@ class Nage {
    * reset the stack of pool items to initial state
    */
   reset() {
-    const { stack } = this;
+    const { length } = this.stack;
 
-    stack.length = 0;
+    if (length) {
+      for (let index = 0; index < length; ++index) {
+        this.entries.delete(this.stack[index]);
+      }
+
+      this.stack.length = 0;
+    }
 
     if (this.initialSize) {
-      for (let index = 0; index < this.initialSize; index++) {
+      for (let index = 0; index < this.initialSize; ++index) {
         this.stack.push(this.generate());
       }
     }
   }
 }
 
-export default Nage;
+export default NagePool;

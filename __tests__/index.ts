@@ -1,7 +1,7 @@
 /* globals afterEach,beforeEach,describe,expect,it */
 
 import createNage from '../src';
-import Nage from '../src/Nage';
+import Nage from '../src/NagePool';
 
 describe('default pool', () => {
   // @ts-ignore
