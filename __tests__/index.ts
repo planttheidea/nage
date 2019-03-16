@@ -4,19 +4,6 @@ import createNage from '../src';
 import Nage from '../src/NagePool';
 
 describe('default pool', () => {
-  // @ts-ignore
-  const original = global.DEV;
-
-  beforeEach(() => {
-    // @ts-ignore
-    global.DEV = true;
-  });
-
-  afterEach(() => {
-    // @ts-ignore
-    global.DEV = original;
-  });
-
   it('will create a pool with the default options', () => {
     const pool = createNage();
 
@@ -173,19 +160,6 @@ describe('default pool', () => {
 });
 
 describe('custom pool', () => {
-  // @ts-ignore
-  const original = global.DEV;
-
-  beforeEach(() => {
-    // @ts-ignore
-    global.DEV = true;
-  });
-
-  afterEach(() => {
-    // @ts-ignore
-    global.DEV = original;
-  });
-
   it('will create a pool with a custom creator', () => {
     const options = {
       create() {
@@ -331,20 +305,7 @@ describe('custom pool', () => {
   });
 });
 
-describe('error states', () => {
-  // @ts-ignore
-  const original = global.DEV;
-
-  beforeEach(() => {
-    // @ts-ignore
-    global.DEV = true;
-  });
-
-  afterEach(() => {
-    // @ts-ignore
-    global.DEV = original;
-  });
-
+describe('error states in non-prod', () => {
   it('will throw when create is not a function', () => {
     // @ts-ignore
     expect(() => createNage({ create: 'foo' })).toThrow();
@@ -369,5 +330,75 @@ describe('error states', () => {
     const pool = createNage();
 
     expect(() => pool.release({})).toThrow();
+  });
+});
+
+describe('error states in prod', () => {
+  // @ts-ignore
+  const original = process.env.NODE_ENV;
+  const originalConsole = console.error;
+
+  const mockConsole = jest.fn();
+
+  beforeEach(() => {
+    // @ts-ignore
+    process.env.NODE_ENV = 'production';
+
+    console.error = mockConsole;
+  });
+
+  afterEach(() => {
+    // @ts-ignore
+    process.env.NODE_ENV = original;
+
+    mockConsole.mockReset();
+
+    console.error = originalConsole;
+  });
+
+  it('will throw when create is not a function', () => {
+    // @ts-ignore
+    expect(() => createNage({ create: 'foo' })).toThrow();
+  });
+
+  it('will not throw when onRelease is not a function', () => {
+    // @ts-ignore
+    expect(() => createNage({ onRelease: 'foo' })).not.toThrow();
+
+    // @ts-ignore
+    createNage({ onRelease: 'foo' });
+
+    expect(mockConsole).toHaveBeenCalledTimes(2);
+  });
+
+  it('will not throw when onReserve is not a function', () => {
+    // @ts-ignore
+    expect(() => createNage({ onReserve: 'foo' })).not.toThrow();
+
+    // @ts-ignore
+    createNage({ onReserve: 'foo' });
+
+    expect(mockConsole).toHaveBeenCalledTimes(2);
+  });
+
+  it('will not throw when onReset is not a function', () => {
+    // @ts-ignore
+    expect(() => createNage({ onReset: 'foo' })).not.toThrow();
+
+    // @ts-ignore
+    createNage({ onReset: 'foo' });
+
+    expect(mockConsole).toHaveBeenCalledTimes(2);
+  });
+
+  it('will not throw an error if the entry being released is not from the pool', () => {
+    const pool = createNage();
+
+    expect(() => pool.release({})).not.toThrow();
+
+    // @ts-ignore
+    createNage([pool.release({})]);
+
+    expect(mockConsole).toHaveBeenCalledTimes(2);
   });
 });

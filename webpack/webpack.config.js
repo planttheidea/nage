@@ -54,13 +54,7 @@ module.exports = {
     umdNamedDefine: true,
   },
 
-  plugins: [
-    new webpack.EnvironmentPlugin(['NODE_ENV']),
-    new webpack.DefinePlugin({
-      DEV: process.env.NODE_ENV !== 'production',
-    }),
-    new HtmlWebpackPlugin(),
-  ],
+  plugins: [new webpack.EnvironmentPlugin(['NODE_ENV']), new HtmlWebpackPlugin()],
 
   resolve: {
     extensions: ['.ts', '.js', '.tsx', '.jsx'],

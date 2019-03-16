@@ -1,4 +1,4 @@
-/* globals DEV */
+import { getEmptyObject, notifyError } from './utils';
 
 /**
  * @constant EMPTY_OBJECT an empty object, to avoid unnecessary garbage when creating new pools
@@ -9,18 +9,6 @@ const EMPTY_OBJECT = {};
  * @var timeBasis the relative time basis to include in the id (incremented as counter)
  */
 let timeBasis = Date.now() % 1e9;
-
-/**
- * @function getEmptyObject
- *
- * @description
- * default create function, returns a new empty object
- *
- * @returns an empty object
- */
-function getEmptyObject() {
-  return {};
-}
 
 /**
  * @class Nage
@@ -70,24 +58,24 @@ class NagePool {
     if (onRelease) {
       if (typeof onRelease === 'function') {
         this.onRelease = onRelease;
-      } else if (DEV) {
-        throw new Error('onRelease must be a function');
+      } else {
+        notifyError('onRelease must be a function');
       }
     }
 
     if (onReserve) {
       if (typeof onReserve === 'function') {
         this.onReserve = onReserve;
-      } else if (DEV) {
-        throw new Error('onReserve must be a function');
+      } else {
+        notifyError('onReserve must be a function');
       }
     }
 
     if (onReset) {
       if (typeof onReset === 'function') {
         this.onReset = onReset;
-      } else if (DEV) {
-        throw new Error('onReset must be a function');
+      } else {
+        notifyError('onReset must be a function');
       }
     }
 
@@ -144,7 +132,7 @@ class NagePool {
     const { onRelease, stack } = this;
 
     if (this.entries.get(entry) !== this.name) {
-      throw new Error('Object passed is not part of this pool.');
+      return notifyError('Object passed is not part of this pool.');
     }
 
     if (stack.indexOf(entry) === -1) {

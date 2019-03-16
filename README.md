@@ -155,8 +155,6 @@ Releases an object back to the pool from where it came from.
 pool.release(object);
 ```
 
-**NOTE**: If you pass an object that is not part of the pool, an error is thrown.
-
 #### reset
 
 Resets the pool to its initial state, which is based on the [`initialSize`](#initialsize) value from [options](#options).

@@ -1,7 +1,5 @@
 /* eslint-disable */
 
-declare const DEV: boolean;
-
 declare namespace Nage {
   export type Entry = {
     [key: string]: any;
