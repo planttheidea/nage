@@ -154,15 +154,11 @@ The number of objects in the pool available for reservation.
 
 #### reserved
 
-The number of objects created in pooling but not available because they are reserved.
+The number of objects in the pool unavailable because they are reserved.
 
 #### size
 
-The size of the current pool, which represent the total number of objects created for pooling.
-
-```typescript
-console.log(pool.size); // 5
-```
+The total number of objects in the pool, regardless of reservation status.
 
 ## Development
 
