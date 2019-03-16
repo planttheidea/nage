@@ -1,6 +1,7 @@
 import create from '../src';
 
 const pool = create({
+  initialSize: 100,
   onRelease(item) {
     Object.keys(item).forEach((key) => {
       Reflect.deleteProperty(item, key);
@@ -37,6 +38,6 @@ for (let index = 0; index < 55; index++) {
 
 console.log(pool.size, [...pool.stack]);
 
-pool.clear();
+pool.reset();
 
 console.log(pool.size, pool);

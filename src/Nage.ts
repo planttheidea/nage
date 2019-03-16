@@ -29,6 +29,7 @@ function getEmptyObject() {
  */
 class Nage {
   entries: WeakMap<Entry, string>;
+  initialSize: number;
   name: string;
   create: Creator;
   onRelease: Handler;
@@ -46,10 +47,12 @@ class Nage {
    */
   constructor({
     create = getEmptyObject,
+    initialSize = 0,
     onRelease,
     onReserve,
   }: Options = EMPTY_OBJECT) {
     this.entries = new WeakMap();
+    this.initialSize = initialSize;
     // eslint-disable-next-line no-bitwise
     this.name = `nage_${timeBasis++}_${(Math.random() * 1e9) >>> 0}`;
     this.stack = [];
@@ -76,6 +79,12 @@ class Nage {
       }
     }
 
+    if (initialSize) {
+      for (let index = 0; index < initialSize; ++index) {
+        this.stack.push(this.generate());
+      }
+    }
+
     if (DEV) {
       Object.freeze(this);
     }
@@ -83,17 +92,6 @@ class Nage {
 
   get size() {
     return this.stack.length;
-  }
-
-  /**
-   * @instance
-   * @function clear
-   *
-   * @description
-   * clear the stack of pool items
-   */
-  clear() {
-    this.stack.length = 0;
   }
 
   /**
@@ -111,28 +109,6 @@ class Nage {
     this.entries.set(entry, this.name);
 
     return entry;
-  }
-
-  /**
-   * @instance
-   * @function reserve
-   *
-   * @description
-   * get either an existing entry, or a newly-generated one
-   *
-   * @param numberOfEntries the number of entries to reserve
-   * @returns a pool entry
-   */
-  reserve() {
-    const { onReserve, stack } = this;
-
-    const reserved = stack.length ? stack.pop() : this.generate();
-
-    if (onReserve) {
-      onReserve(reserved);
-    }
-
-    return reserved;
   }
 
   /**
@@ -159,6 +135,47 @@ class Nage {
       }
 
       stack.push(entry);
+    }
+  }
+
+  /**
+   * @instance
+   * @function reserve
+   *
+   * @description
+   * get either an existing entry, or a newly-generated one
+   *
+   * @param numberOfEntries the number of entries to reserve
+   * @returns a pool entry
+   */
+  reserve() {
+    const { onReserve, stack } = this;
+
+    const reserved = stack.length ? stack.pop() : this.generate();
+
+    if (onReserve) {
+      onReserve(reserved);
+    }
+
+    return reserved;
+  }
+
+  /**
+   * @instance
+   * @function reset
+   *
+   * @description
+   * reset the stack of pool items to initial state
+   */
+  reset() {
+    const { stack } = this;
+
+    stack.length = 0;
+
+    if (this.initialSize) {
+      for (let index = 0; index < this.initialSize; index++) {
+        this.stack.push(this.generate());
+      }
     }
   }
 }

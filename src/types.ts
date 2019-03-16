@@ -13,6 +13,7 @@ type Handler = (entry: Entry) => void;
 
 type Options = {
   create?: Creator;
+  initialSize?: number;
   onRelease?: Handler;
   onReserve?: Handler;
 };
