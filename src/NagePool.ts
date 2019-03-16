@@ -29,6 +29,7 @@ function getEmptyObject() {
  */
 class NagePool {
   entries: WeakMap<Nage.Entry, string>;
+  generated: number;
   initialSize: number;
   name: string;
   create: Nage.Creator;
@@ -56,6 +57,7 @@ class NagePool {
     // eslint-disable-next-line no-bitwise
     this.name = `nage_${timeBasis++}_${(Math.random() * 1e9) >>> 0}`;
     this.stack = [];
+    this.generated = 0;
 
     if (typeof create !== 'function') {
       throw new Error('create must be a function');
@@ -84,14 +86,18 @@ class NagePool {
         this.stack.push(this.generate());
       }
     }
+  }
 
-    if (DEV) {
-      Object.freeze(this);
-    }
+  get available() {
+    return this.stack.length;
+  }
+
+  get reserved() {
+    return this.generated - this.stack.length;
   }
 
   get size() {
-    return this.stack.length;
+    return this.generated;
   }
 
   /**
@@ -107,6 +113,8 @@ class NagePool {
     const entry = this.create();
 
     this.entries.set(entry, this.name);
+
+    ++this.generated;
 
     return entry;
   }
@@ -177,6 +185,8 @@ class NagePool {
 
       this.stack.length = 0;
     }
+
+    this.generated = 0;
 
     if (this.initialSize) {
       for (let index = 0; index < this.initialSize; ++index) {

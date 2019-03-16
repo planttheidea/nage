@@ -41,7 +41,9 @@ describe('default pool', () => {
     const object = pool.reserve();
 
     expect(pool.stack).toEqual([]);
-    expect(pool.size).toEqual(0);
+    expect(pool.size).toEqual(1);
+    expect(pool.reserved).toEqual(1);
+    expect(pool.available).toEqual(0);
 
     expect(object).toEqual({});
   });
@@ -52,14 +54,18 @@ describe('default pool', () => {
     const object = pool.reserve();
 
     expect(pool.stack).toEqual([]);
-    expect(pool.size).toEqual(0);
+    expect(pool.size).toEqual(1);
+    expect(pool.reserved).toEqual(1);
+    expect(pool.available).toEqual(0);
 
     expect(object).toEqual({});
 
     const object2 = pool.reserve();
 
     expect(pool.stack).toEqual([]);
-    expect(pool.size).toEqual(0);
+    expect(pool.size).toEqual(2);
+    expect(pool.reserved).toEqual(2);
+    expect(pool.available).toEqual(0);
 
     expect(object2).toEqual({});
   });
@@ -67,26 +73,47 @@ describe('default pool', () => {
   it('will release a reserved object', () => {
     const pool = createNage();
 
+    expect(pool.stack).toEqual([{}]);
+    expect(pool.size).toEqual(1);
+    expect(pool.reserved).toEqual(0);
+    expect(pool.available).toEqual(1);
+
     const object = pool.reserve();
+
+    expect(pool.stack).toEqual([]);
+    expect(pool.size).toEqual(1);
+    expect(pool.reserved).toEqual(1);
+    expect(pool.available).toEqual(0);
 
     pool.release(object);
 
     expect(pool.stack).toEqual([object]);
     expect(pool.size).toEqual(1);
+    expect(pool.reserved).toEqual(0);
+    expect(pool.available).toEqual(1);
   });
 
   it('will reset the pool of objects when no initial size', () => {
     const pool = createNage();
 
+    expect(pool.stack).toEqual([{}]);
+    expect(pool.size).toEqual(1);
+    expect(pool.reserved).toEqual(0);
+    expect(pool.available).toEqual(1);
+
     pool.reserve();
 
     expect(pool.stack).toEqual([]);
-    expect(pool.size).toEqual(0);
+    expect(pool.size).toEqual(1);
+    expect(pool.reserved).toEqual(1);
+    expect(pool.available).toEqual(0);
 
     pool.reset();
 
     expect(pool.stack).toEqual([{}]);
     expect(pool.size).toEqual(1);
+    expect(pool.reserved).toEqual(0);
+    expect(pool.available).toEqual(1);
   });
 
   it('will reset the pool of objects when there is an initial size', () => {

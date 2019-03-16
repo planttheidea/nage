@@ -17,6 +17,8 @@ Efficient, tiny object pool
   - [release](#release)
   - [reset](#reset)
 - [Pool values](#pool-values)
+  - [available](#available)
+  - [reserved](#reserved)
   - [size](#size)
 - [Development](#development)
 
@@ -146,9 +148,17 @@ Resets the pool to its initial state, which is based on the [`initialSize`](#ini
 
 ## Pool values
 
+#### available
+
+The number of objects in the pool available for reservation.
+
+#### reserved
+
+The number of objects created in pooling but not available because they are reserved.
+
 #### size
 
-The size of the current pool's stack, which represents the number of unused objects in the pool.
+The size of the current pool, which represent the total number of objects created for pooling.
 
 ```typescript
 console.log(pool.size); // 5
