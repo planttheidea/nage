@@ -161,6 +161,10 @@ pool.release(object);
 
 Resets the pool to its initial state, which is based on the [`initialSize`](#initialsize) value from [options](#options).
 
+```typescript
+pool.reset();
+```
+
 ## Pool values
 
 #### available
