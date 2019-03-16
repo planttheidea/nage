@@ -47,7 +47,7 @@ class NagePool {
    */
   constructor({
     create = getEmptyObject,
-    initialSize = 0,
+    initialSize = 1,
     onRelease,
     onReserve,
   }: Nage.Options = EMPTY_OBJECT) {

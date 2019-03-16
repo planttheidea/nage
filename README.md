@@ -86,7 +86,7 @@ const pool = nage({
 
 #### initialSize
 
-_defaults to 0_
+_defaults to 1_
 
 ```typescript
 const pool = nage({ initialSize: 10 });

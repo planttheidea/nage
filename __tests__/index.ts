@@ -22,7 +22,7 @@ describe('default pool', () => {
 
     expect(pool instanceof Nage).toBe(true);
 
-    expect(pool.stack).toEqual([]);
+    expect(pool.stack).toEqual([{}]);
   });
 
   it('will create a pool with an initial size', () => {
@@ -46,6 +46,24 @@ describe('default pool', () => {
     expect(object).toEqual({});
   });
 
+  it('will create a new object when trying to reserve with none remaining', () => {
+    const pool = createNage();
+
+    const object = pool.reserve();
+
+    expect(pool.stack).toEqual([]);
+    expect(pool.size).toEqual(0);
+
+    expect(object).toEqual({});
+
+    const object2 = pool.reserve();
+
+    expect(pool.stack).toEqual([]);
+    expect(pool.size).toEqual(0);
+
+    expect(object2).toEqual({});
+  });
+
   it('will release a reserved object', () => {
     const pool = createNage();
 
@@ -60,14 +78,15 @@ describe('default pool', () => {
   it('will reset the pool of objects when no initial size', () => {
     const pool = createNage();
 
-    const object = pool.reserve();
-
-    pool.release(object);
-
-    pool.reset();
+    pool.reserve();
 
     expect(pool.stack).toEqual([]);
     expect(pool.size).toEqual(0);
+
+    pool.reset();
+
+    expect(pool.stack).toEqual([{}]);
+    expect(pool.size).toEqual(1);
   });
 
   it('will reset the pool of objects when there is an initial size', () => {
