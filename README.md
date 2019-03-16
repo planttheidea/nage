@@ -6,17 +6,18 @@ Efficient, tiny object pool
 
 - [Usage](#usage)
   - [Prerequisites](#prerequisites)
+- [Typings](#typings)
+- [Pool options](#pool-options)
+  - [create](#create)
+  - [initialSize](#initialsize)
+  - [onReserve](#onreserve)
+  - [onRelease](#onrelease)
 - [Pool methods](#pool-methods)
   - [reserve](#reserve)
   - [release](#release)
   - [reset](#reset)
 - [Pool values](#pool-values)
   - [size](#size)
-- [Pool options](#pool-options)
-  - [create](#create)
-  - [initialSize](#initialsize)
-  - [onReserve](#onreserve)
-  - [onRelease](#onrelease)
 - [Development](#development)
 
 ## Usage
@@ -40,38 +41,26 @@ pool.release(object);
 
 `WeakMap` must be available globally, either natively or through polyfill. This is used internally to allow for garbage collection of objects accidentally not released back into the pool.
 
-## Pool methods
+## Typings
 
-#### reserve
-
-Reserves an object from the pool. If no objects remain to be reserved, it will create a new one for you based on the [`create`](#create) method from [options](#pool-options).
+All typings are under the `Nage` namespace. The available types:
 
 ```typescript
-const object = pool.reserve();
-```
+type Entry = {
+  [key: string]: any;
+  [index: number]: any;
+};
 
-#### release
+type Creator = (...args: any[]) => Entry;
 
-Releases an object back to the pool from where it came from.
+type Handler = (entry: Entry) => void;
 
-```typescript
-pool.release(object);
-```
-
-**NOTE**: If you pass an object that is not part of the pool, an error is thrown.
-
-#### reset
-
-Resets the pool to its initial state, which is based on the [`initialSize`](#initialsize) value from [options](#options).
-
-## Pool values
-
-#### size
-
-The size of the current pool's stack, which represents the number of unused objects in the pool.
-
-```typescript
-console.log(pool.size); // 5
+type Options = {
+  create?: Creator;
+  initialSize?: number;
+  onRelease?: Handler;
+  onReserve?: Handler;
+};
 ```
 
 ## Pool options
@@ -80,7 +69,7 @@ console.log(pool.size); // 5
 
 _defaults to () => ({})_
 
-The method used to create a new object in the pool. The default returns an empty method, but if you have objects with a consistent structure it is more memory efficient to return an object with that structure to reduce the number of hidden classes used.
+The method used to create a new object in the pool. The default returns an empty object, but if you have objects with a consistent structure it is more memory efficient to return an object with that structure to reduce the number of hidden classes created under-the-hood.
 
 ```typescript
 const pool = nage({
@@ -93,7 +82,7 @@ const pool = nage({
 });
 ```
 
-**NOTE**: This function must return a non-`null` object. This can be a standard POJO, array, Map, Set, etc., but it cannot be a primitive or `null`.
+**NOTE**: This function must return an object of some kind. This can be a standard POJO, array, Map, Set, etc., but it cannot be a primitive or `null`.
 
 #### initialSize
 
@@ -130,6 +119,40 @@ const pool = nage({
 ```
 
 Handler called for a newly-released item back into the pool, called with the object just prior to being added to the stack. This method is handy to perform cleanup of the object in preparation for future use.
+
+## Pool methods
+
+#### reserve
+
+Reserves an object from the pool. If no objects remain to be reserved, it will create a new one for you based on the [`create`](#create) method from [options](#pool-options).
+
+```typescript
+const object = pool.reserve();
+```
+
+#### release
+
+Releases an object back to the pool from where it came from.
+
+```typescript
+pool.release(object);
+```
+
+**NOTE**: If you pass an object that is not part of the pool, an error is thrown.
+
+#### reset
+
+Resets the pool to its initial state, which is based on the [`initialSize`](#initialsize) value from [options](#options).
+
+## Pool values
+
+#### size
+
+The size of the current pool's stack, which represents the number of unused objects in the pool.
+
+```typescript
+console.log(pool.size); // 5
+```
 
 ## Development
 
