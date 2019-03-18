@@ -57,7 +57,6 @@
     "dist": "npm run clean && npm run build",
     "lint": "NODE_ENV=test eslint src/*.ts",
     "lint:fix": "NODE_ENV=test eslint src --fix",
-    "postpublish": "npm run docs && git add . && git commit -m \"Update docs\" && git push",
     "prepublish": "if in-publish; then npm run prepublish:compile; fi",
     "prepublish:compile": "npm run lint && npm run test:coverage && npm run dist",
     "release": "release-it",
