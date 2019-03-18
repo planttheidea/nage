@@ -16,15 +16,16 @@ let timeBasis = Date.now() % 1e9;
  * @classdesc pool objects, generating new ones only when necessary
  */
 class NagePool {
-  entries: WeakMap<Nage.Entry, string>;
-  generated: number;
-  initialSize: number;
-  name: string;
-  create: Nage.Creator;
-  onRelease: Nage.Handler;
-  onReserve: Nage.Handler;
-  onReset: Nage.ResetHandler;
-  stack: Nage.Entry[];
+  protected _entries: WeakMap<Nage.Entry, string>;
+  protected _generated: number;
+  protected _name: string;
+  protected _stack: Nage.Entry[];
+
+  readonly create: Nage.Creator;
+  readonly initialSize: number;
+  readonly onRelease: Nage.Handler;
+  readonly onReserve: Nage.Handler;
+  readonly onReset: Nage.ResetHandler;
 
   /**
    * @constructor
@@ -42,12 +43,11 @@ class NagePool {
     onReserve,
     onReset,
   }: Nage.Options = EMPTY_OBJECT) {
-    this.entries = new WeakMap();
-    this.initialSize = initialSize;
+    this._entries = new WeakMap();
     // eslint-disable-next-line no-bitwise
-    this.name = `nage_${timeBasis++}_${(Math.random() * 1e9) >>> 0}`;
-    this.stack = [];
-    this.generated = 0;
+    this._name = `nage_${timeBasis++}_${(Math.random() * 1e9) >>> 0}`;
+    this._stack = [];
+    this._generated = 0;
 
     if (typeof create !== 'function') {
       throw new Error('create must be a function');
@@ -79,9 +79,13 @@ class NagePool {
       }
     }
 
+    this.initialSize = initialSize;
+
     if (initialSize) {
+      const { _stack: stack } = this;
+
       for (let index = 0; index < initialSize; ++index) {
-        this.stack.push(this._generate());
+        stack.push(this._generate());
       }
     }
   }
@@ -91,7 +95,7 @@ class NagePool {
    * @var available the number of items in the pool available for reservation
    */
   get available() {
-    return this.stack.length;
+    return this._stack.length;
   }
 
   /**
@@ -99,7 +103,7 @@ class NagePool {
    * @var reserved the number of items in the pool currently reserved
    */
   get reserved() {
-    return this.generated - this.stack.length;
+    return this._generated - this._stack.length;
   }
 
   /**
@@ -107,7 +111,7 @@ class NagePool {
    * @var size the total number of items in the pool, both reserved and available
    */
   get size() {
-    return this.generated;
+    return this._generated;
   }
 
   /**
@@ -115,16 +119,16 @@ class NagePool {
    * @function _generate
    *
    * @description
-   * create a new pool entry and add it to the list of entries
+   * create a new pool entry and add it to the list of _entries
    *
    * @returns a new entry
    */
   _generate() {
     const entry = this.create();
 
-    this.entries.set(entry, this.name);
+    this._entries.set(entry, this._name);
 
-    ++this.generated;
+    ++this._generated;
 
     return entry;
   }
@@ -141,11 +145,11 @@ class NagePool {
    * @param entry the entry to release back to the pool
    */
   release(entry: Nage.Entry) {
-    const { onRelease, stack } = this;
-
-    if (this.entries.get(entry) !== this.name) {
+    if (this._entries.get(entry) !== this._name) {
       return notifyError('Object passed is not part of this pool.');
     }
+
+    const { onRelease, _stack: stack } = this;
 
     if (stack.indexOf(entry) === -1) {
       if (onRelease) {
@@ -161,13 +165,13 @@ class NagePool {
    * @function reserve
    *
    * @description
-   * get either an existing entry, or a newly-generated one
+   * get either an existing entry, or a newly-_generated one
    *
-   * @param numberOfEntries the number of entries to reserve
+   * @param numberOfEntries the number of _entries to reserve
    * @returns a pool entry
    */
   reserve() {
-    const { onReserve, stack } = this;
+    const { onReserve, _stack: stack } = this;
 
     const reserved = stack.length ? stack.pop() : this._generate();
 
@@ -183,27 +187,31 @@ class NagePool {
    * @function reset
    *
    * @description
-   * reset the stack of pool items to initial state
+   * reset the _stack of pool items to initial state
    */
   reset() {
-    const { length } = this.stack;
+    const { initialSize, onReset, _stack: stack } = this;
 
-    if (this.onReset) {
-      this.onReset(this.stack);
+    if (onReset) {
+      onReset(stack);
     }
+
+    const { length } = stack;
 
     if (length) {
+      const { _entries: entries } = this;
+
       for (let index = 0; index < length; ++index) {
-        this.entries.delete(this.stack[index]);
+        entries.delete(stack[index]);
       }
 
-      this.stack.length = 0;
+      stack.length = 0;
     }
 
-    this.generated = 0;
+    this._generated = 0;
 
-    for (let index = 0; index < this.initialSize; ++index) {
-      this.stack.push(this._generate());
+    for (let index = 0; index < initialSize; ++index) {
+      stack.push(this._generate());
     }
   }
 }

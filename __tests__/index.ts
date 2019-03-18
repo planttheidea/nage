@@ -9,7 +9,8 @@ describe('default pool', () => {
 
     expect(pool instanceof Nage).toBe(true);
 
-    expect(pool.stack).toEqual([{}]);
+    // @ts-ignore
+    expect(pool._stack).toEqual([{}]);
   });
 
   it('will create a pool with an initial size', () => {
@@ -19,7 +20,8 @@ describe('default pool', () => {
 
     expect(pool instanceof Nage).toBe(true);
 
-    expect(pool.stack).toEqual([{}, {}, {}]);
+    // @ts-ignore
+    expect(pool._stack).toEqual([{}, {}, {}]);
   });
 
   it('will reserve an object', () => {
@@ -27,7 +29,8 @@ describe('default pool', () => {
 
     const object = pool.reserve();
 
-    expect(pool.stack).toEqual([]);
+    // @ts-ignore
+    expect(pool._stack).toEqual([]);
     expect(pool.size).toEqual(1);
     expect(pool.reserved).toEqual(1);
     expect(pool.available).toEqual(0);
@@ -40,7 +43,8 @@ describe('default pool', () => {
 
     const object = pool.reserve();
 
-    expect(pool.stack).toEqual([]);
+    // @ts-ignore
+    expect(pool._stack).toEqual([]);
     expect(pool.size).toEqual(1);
     expect(pool.reserved).toEqual(1);
     expect(pool.available).toEqual(0);
@@ -49,7 +53,8 @@ describe('default pool', () => {
 
     const object2 = pool.reserve();
 
-    expect(pool.stack).toEqual([]);
+    // @ts-ignore
+    expect(pool._stack).toEqual([]);
     expect(pool.size).toEqual(2);
     expect(pool.reserved).toEqual(2);
     expect(pool.available).toEqual(0);
@@ -60,21 +65,24 @@ describe('default pool', () => {
   it('will release a reserved object', () => {
     const pool = createNage();
 
-    expect(pool.stack).toEqual([{}]);
+    // @ts-ignore
+    expect(pool._stack).toEqual([{}]);
     expect(pool.size).toEqual(1);
     expect(pool.reserved).toEqual(0);
     expect(pool.available).toEqual(1);
 
     const object = pool.reserve();
 
-    expect(pool.stack).toEqual([]);
+    // @ts-ignore
+    expect(pool._stack).toEqual([]);
     expect(pool.size).toEqual(1);
     expect(pool.reserved).toEqual(1);
     expect(pool.available).toEqual(0);
 
     pool.release(object);
 
-    expect(pool.stack).toEqual([object]);
+    // @ts-ignore
+    expect(pool._stack).toEqual([object]);
     expect(pool.size).toEqual(1);
     expect(pool.reserved).toEqual(0);
     expect(pool.available).toEqual(1);
@@ -83,21 +91,24 @@ describe('default pool', () => {
   it('will reset the pool of objects when no initial size', () => {
     const pool = createNage();
 
-    expect(pool.stack).toEqual([{}]);
+    // @ts-ignore
+    expect(pool._stack).toEqual([{}]);
     expect(pool.size).toEqual(1);
     expect(pool.reserved).toEqual(0);
     expect(pool.available).toEqual(1);
 
     pool.reserve();
 
-    expect(pool.stack).toEqual([]);
+    // @ts-ignore
+    expect(pool._stack).toEqual([]);
     expect(pool.size).toEqual(1);
     expect(pool.reserved).toEqual(1);
     expect(pool.available).toEqual(0);
 
     pool.reset();
 
-    expect(pool.stack).toEqual([{}]);
+    // @ts-ignore
+    expect(pool._stack).toEqual([{}]);
     expect(pool.size).toEqual(1);
     expect(pool.reserved).toEqual(0);
     expect(pool.available).toEqual(1);
@@ -108,21 +119,24 @@ describe('default pool', () => {
       initialSize: 3,
     });
 
-    expect(pool.stack).toEqual([{}, {}, {}]);
+    // @ts-ignore
+    expect(pool._stack).toEqual([{}, {}, {}]);
     expect(pool.size).toEqual(3);
     expect(pool.reserved).toEqual(0);
     expect(pool.available).toEqual(3);
 
     pool.reserve();
 
-    expect(pool.stack).toEqual([{}, {}]);
+    // @ts-ignore
+    expect(pool._stack).toEqual([{}, {}]);
     expect(pool.size).toEqual(3);
     expect(pool.reserved).toEqual(1);
     expect(pool.available).toEqual(2);
 
     pool.reset();
 
-    expect(pool.stack).toEqual([{}, {}, {}]);
+    // @ts-ignore
+    expect(pool._stack).toEqual([{}, {}, {}]);
     expect(pool.size).toEqual(3);
     expect(pool.reserved).toEqual(0);
     expect(pool.available).toEqual(3);
@@ -135,27 +149,31 @@ describe('default pool', () => {
       onReset,
     });
 
-    expect(pool.stack).toEqual([{}]);
+    // @ts-ignore
+    expect(pool._stack).toEqual([{}]);
     expect(pool.size).toEqual(1);
     expect(pool.reserved).toEqual(0);
     expect(pool.available).toEqual(1);
 
     pool.reserve();
 
-    expect(pool.stack).toEqual([]);
+    // @ts-ignore
+    expect(pool._stack).toEqual([]);
     expect(pool.size).toEqual(1);
     expect(pool.reserved).toEqual(1);
     expect(pool.available).toEqual(0);
 
     pool.reset();
 
-    expect(pool.stack).toEqual([{}]);
+    // @ts-ignore
+    expect(pool._stack).toEqual([{}]);
     expect(pool.size).toEqual(1);
     expect(pool.reserved).toEqual(0);
     expect(pool.available).toEqual(1);
 
     expect(onReset).toHaveBeenCalledTimes(1);
-    expect(onReset).toHaveBeenCalledWith(pool.stack);
+    // @ts-ignore
+    expect(onReset).toHaveBeenCalledWith(pool._stack);
   });
 });
 
@@ -175,7 +193,8 @@ describe('custom pool', () => {
 
     const object = pool.reserve();
 
-    expect(pool.stack).toEqual([]);
+    // @ts-ignore
+    expect(pool._stack).toEqual([]);
 
     expect(object).toEqual({
       foo: 'bar',
@@ -184,13 +203,15 @@ describe('custom pool', () => {
 
     pool.release(object);
 
-    expect(pool.stack).toEqual([object]);
+    // @ts-ignore
+    expect(pool._stack).toEqual([object]);
 
     const sameObject = pool.reserve();
 
     expect(sameObject).toBe(object);
 
-    expect(pool.stack).toEqual([]);
+    // @ts-ignore
+    expect(pool._stack).toEqual([]);
   });
 
   it('will create a pool with an onReserve handler', () => {
@@ -206,7 +227,8 @@ describe('custom pool', () => {
 
     const object = pool.reserve();
 
-    expect(pool.stack).toEqual([]);
+    // @ts-ignore
+    expect(pool._stack).toEqual([]);
 
     expect(object).toEqual({
       foo: 'bar',
@@ -214,13 +236,15 @@ describe('custom pool', () => {
 
     pool.release(object);
 
-    expect(pool.stack).toEqual([object]);
+    // @ts-ignore
+    expect(pool._stack).toEqual([object]);
 
     const sameObject = pool.reserve();
 
     expect(sameObject).toBe(object);
 
-    expect(pool.stack).toEqual([]);
+    // @ts-ignore
+    expect(pool._stack).toEqual([]);
   });
 
   it('will create a pool with an onRelease handler', () => {
@@ -239,7 +263,8 @@ describe('custom pool', () => {
 
     const object = pool.reserve();
 
-    expect(pool.stack).toEqual([]);
+    // @ts-ignore
+    expect(pool._stack).toEqual([]);
 
     expect(object).toEqual({});
 
@@ -247,14 +272,16 @@ describe('custom pool', () => {
 
     pool.release(object);
 
-    expect(pool.stack).toEqual([object]);
+    // @ts-ignore
+    expect(pool._stack).toEqual([object]);
 
     const sameObject = pool.reserve();
 
     expect(sameObject).toBe(object);
     expect(sameObject).toEqual({});
 
-    expect(pool.stack).toEqual([]);
+    // @ts-ignore
+    expect(pool._stack).toEqual([]);
   });
 
   it('will create a pool with a custom creator and onReserve + onRelease handlers', () => {
@@ -282,7 +309,8 @@ describe('custom pool', () => {
 
     const object = pool.reserve();
 
-    expect(pool.stack).toEqual([]);
+    // @ts-ignore
+    expect(pool._stack).toEqual([]);
 
     expect(object).toEqual({
       bar: 'baz',
@@ -291,7 +319,8 @@ describe('custom pool', () => {
 
     pool.release(object);
 
-    expect(pool.stack).toEqual([object]);
+    // @ts-ignore
+    expect(pool._stack).toEqual([object]);
     expect(object).toEqual({});
 
     const sameObject = pool.reserve();
@@ -301,7 +330,8 @@ describe('custom pool', () => {
       foo: 'bar',
     });
 
-    expect(pool.stack).toEqual([]);
+    // @ts-ignore
+    expect(pool._stack).toEqual([]);
   });
 });
 

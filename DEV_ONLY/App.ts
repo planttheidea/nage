@@ -40,7 +40,8 @@ for (let index = 0; index < 55; index++) {
   pool.release(used[index]);
 }
 
-console.log(pool.size, [...pool.stack]);
+// @ts-ignore
+console.log(pool.size, [...pool._stack]);
 
 pool.reset();
 
