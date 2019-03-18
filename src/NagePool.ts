@@ -86,14 +86,26 @@ class NagePool {
     }
   }
 
+  /**
+   * @instance
+   * @var available the number of items in the pool available for reservation
+   */
   get available() {
     return this.stack.length;
   }
 
+  /**
+   * @instance
+   * @var reserved the number of items in the pool currently reserved
+   */
   get reserved() {
     return this.generated - this.stack.length;
   }
 
+  /**
+   * @instance
+   * @var size the total number of items in the pool, both reserved and available
+   */
   get size() {
     return this.generated;
   }
