@@ -13,6 +13,17 @@ describe('default pool', () => {
     expect(pool._stack).toEqual([{}]);
   });
 
+  it('will create a pool with a name', () => {
+    const name = 'pool';
+    const pool = createNage({ name });
+
+    expect(pool instanceof Nage).toBe(true);
+
+    // @ts-ignore
+    expect(pool._stack).toEqual([{}]);
+    expect(pool.name).toEqual(name);
+  });
+
   it('will create a pool with an initial size', () => {
     const pool = createNage({
       initialSize: 3,
