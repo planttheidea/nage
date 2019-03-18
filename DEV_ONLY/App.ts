@@ -4,6 +4,7 @@ console.time();
 
 const pool = nage({
   initialSize: 10000,
+  name: 'My Special Pool',
   onRelease(item) {
     Object.keys(item).forEach((key) => {
       Reflect.deleteProperty(item, key);
@@ -13,7 +14,7 @@ const pool = nage({
 
 console.timeEnd();
 
-console.log(pool);
+console.log(pool.name, pool);
 
 const object1 = pool.reserve();
 

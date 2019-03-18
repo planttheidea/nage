@@ -10,6 +10,7 @@ Efficient, tiny object pool
 - [Pool options](#pool-options)
   - [create](#create)
   - [initialSize](#initialsize)
+  - [name](#name)
   - [onReserve](#onreserve)
   - [onRelease](#onrelease)
   - [onReset](#onreset)
@@ -46,7 +47,7 @@ pool.release(object);
 
 ## Typings
 
-All typings are under the `Nage` namespace. The available types:
+All typings for the internals are under the `Nage` namespace. The available types:
 
 ```typescript
 type Entry = {
@@ -61,9 +62,26 @@ type Handler = (entry: Entry) => void;
 type Options = {
   create?: Creator;
   initialSize?: number;
+  name?: number | string | symbol;
   onRelease?: Handler;
   onReserve?: Handler;
 };
+```
+
+The pool itself is not namespaced, it should be available directly as `NagePool`:
+
+```typescript
+interface NagePool {
+  constructor(options: Nage.Options): NagePool;
+
+  available: number;
+  reserved: number;
+  size: number;
+
+  release(entry: Nage.Entry): void;
+  reserve(): Nage.Entry;
+  reset(): void;
+}
 ```
 
 ## Pool options
@@ -96,6 +114,14 @@ const pool = nage({ initialSize: 10 });
 ```
 
 The number of objects to prepopulate the pool with. If you expect a number of objects to be used in parallel, it is advised to prepopulate the pool with the number appropriate for the use-case.
+
+#### name
+
+```typescript
+const pool = nage({ name: 'custom-name' });
+```
+
+The name for the given pool. This doesn't impact anything at runtime, but can help with debugging as an identifier.
 
 #### onReserve
 

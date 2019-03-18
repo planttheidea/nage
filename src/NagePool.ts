@@ -18,11 +18,12 @@ let timeBasis = Date.now() % 1e9;
 class NagePool {
   protected _entries: WeakMap<Nage.Entry, string>;
   protected _generated: number;
-  protected _name: string;
+  protected _id: string;
   protected _stack: Nage.Entry[];
 
   readonly create: Nage.Creator;
   readonly initialSize: number;
+  readonly name: number | string | symbol;
   readonly onRelease: Nage.Handler;
   readonly onReserve: Nage.Handler;
   readonly onReset: Nage.ResetHandler;
@@ -39,13 +40,14 @@ class NagePool {
   constructor({
     create = getEmptyObject,
     initialSize = 1,
+    name,
     onRelease,
     onReserve,
     onReset,
   }: Nage.Options = EMPTY_OBJECT) {
     this._entries = new WeakMap();
     // eslint-disable-next-line no-bitwise
-    this._name = `nage_${timeBasis++}_${(Math.random() * 1e9) >>> 0}`;
+    this._id = `nage_${timeBasis++}_${(Math.random() * 1e9) >>> 0}`;
     this._stack = [];
     this._generated = 0;
 
@@ -88,6 +90,8 @@ class NagePool {
         stack.push(this._generate());
       }
     }
+
+    this.name = name;
   }
 
   /**
@@ -126,7 +130,7 @@ class NagePool {
   _generate() {
     const entry = this.create();
 
-    this._entries.set(entry, this._name);
+    this._entries.set(entry, this._id);
 
     ++this._generated;
 
@@ -145,7 +149,7 @@ class NagePool {
    * @param entry the entry to release back to the pool
    */
   release(entry: Nage.Entry) {
-    if (this._entries.get(entry) !== this._name) {
+    if (this._entries.get(entry) !== this._id) {
       return notifyError('Object passed is not part of this pool.');
     }
 
