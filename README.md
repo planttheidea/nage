@@ -85,7 +85,7 @@ const pool = nage({
 });
 ```
 
-**NOTE**: This function must return an object of some kind. This can be a standard POJO, array, Map, Set, etc., but it cannot be a primitive or `null`.
+**NOTE**: This function does not receive any arguments, and must return an object of some kind. This can be a standard POJO, array, Map, Set, etc., but it cannot be a primitive or `null`.
 
 #### initialSize
 

@@ -10,10 +10,13 @@ declare namespace Nage {
 
   export type Handler = (entry: Entry) => void;
 
+  export type ResetHandler = (stack: Entry[]) => void;
+
   export type Options = {
     create?: Creator;
     initialSize?: number;
     onRelease?: Handler;
     onReserve?: Handler;
+    onReset?: ResetHandler;
   };
 }
