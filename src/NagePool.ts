@@ -81,7 +81,7 @@ class NagePool {
 
     if (initialSize) {
       for (let index = 0; index < initialSize; ++index) {
-        this.stack.push(this.generate());
+        this.stack.push(this._generate());
       }
     }
   }
@@ -112,14 +112,14 @@ class NagePool {
 
   /**
    * @instance
-   * @function generate
+   * @function _generate
    *
    * @description
    * create a new pool entry and add it to the list of entries
    *
    * @returns a new entry
    */
-  generate() {
+  _generate() {
     const entry = this.create();
 
     this.entries.set(entry, this.name);
@@ -169,7 +169,7 @@ class NagePool {
   reserve() {
     const { onReserve, stack } = this;
 
-    const reserved = stack.length ? stack.pop() : this.generate();
+    const reserved = stack.length ? stack.pop() : this._generate();
 
     if (onReserve) {
       onReserve(reserved);
@@ -203,7 +203,7 @@ class NagePool {
     this.generated = 0;
 
     for (let index = 0; index < this.initialSize; ++index) {
-      this.stack.push(this.generate());
+      this.stack.push(this._generate());
     }
   }
 }

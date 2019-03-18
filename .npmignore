@@ -9,6 +9,7 @@ coverage
 DEV_ONLY
 node_modules
 webpack
+.release-it*
 jest.config.js
 rollup.config.js
 src
