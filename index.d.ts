@@ -20,3 +20,17 @@ declare namespace Nage {
     onReset?: ResetHandler;
   };
 }
+
+declare interface NagePool {
+  constructor(options: Nage.Options): NagePool;
+
+  available: number;
+  reserved: number;
+  size: number;
+
+  release(entry: Nage.Entry): void;
+  reserve(): Nage.Entry;
+  reset(): void;
+}
+
+export default function nage(options?: Nage.Options): NagePool;
