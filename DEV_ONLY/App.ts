@@ -27,19 +27,32 @@ pool.release(object1);
 
 console.log(pool);
 
-const used = [];
+// const used = [];
 
-for (let index = 0; index < 55; index++) {
-  used[index] = pool.reserve();
+// for (let index = 0; index < 55; index++) {
+//   used[index] = pool.reserve();
 
-  used[index].bar = `baz_${index}`;
-}
+//   used[index].bar = `baz_${index}`;
+// }
+
+const used = pool.reserveN(55).map((entry, index) => {
+  // eslint-disable-next-line no-param-reassign
+  entry.bar = `baz_${index}`;
+
+  return entry;
+});
 
 console.log(pool.size, used.map(entry => ({ ...entry })));
 
+const toRelease = [];
+
 for (let index = 0; index < 55; index++) {
-  pool.release(used[index]);
+  // pool.release(used[index]);
+
+  toRelease.push(used[index]);
 }
+
+pool.releaseN(toRelease);
 
 // @ts-ignore
 console.log(pool.size, [...pool._stack]);

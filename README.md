@@ -181,6 +181,22 @@ Releases an object back to the pool from where it came from.
 pool.release(object);
 ```
 
+#### reserveN
+
+Reserves multiple objects from the pool. If no objects remain to be reserved, it will create new ones for you based on the [`create`](#create) method from [options](#pool-options).
+
+```typescript
+const object = pool.reserveN(10);
+```
+
+#### releaseN
+
+Releases multiple objects back to the pool from where it came from.
+
+```typescript
+pool.releaseN([object, anotherObject]);
+```
+
 #### reset
 
 Resets the pool to its initial state, which is based on the [`initialSize`](#initialsize) value from [options](#options).
