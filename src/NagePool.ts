@@ -142,7 +142,7 @@ class NagePool {
    * @function release
    *
    * @description
-   * return the objects passed to the pool, if it is not already present
+   * return the entry passed to the pool if not already present
    *
    * @throws if the entry is not part of the original pool
    *
@@ -166,6 +166,19 @@ class NagePool {
 
   /**
    * @instance
+   * @function releaseN
+   *
+   * @description
+   * return the entries passed to the pool if not already present
+   *
+   * @param entries the entries to release back to the pool
+   */
+  releaseN(entries: Nage.Entry[]) {
+    entries.forEach(entry => this.release(entry));
+  }
+
+  /**
+   * @instance
    * @function reserve
    *
    * @description
@@ -184,6 +197,26 @@ class NagePool {
     }
 
     return reserved;
+  }
+
+  /**
+   * @instance
+   * @function reserveN
+   *
+   * @description
+   * get reserve multiple entries from the pool
+   *
+   * @param size the number of entries to reserve
+   * @returns an array of pool entries
+   */
+  reserveN(size: number) {
+    const reservations = new Array(size);
+
+    for (let index = 0; index < size; ++index) {
+      reservations[index] = this.reserve();
+    }
+
+    return reservations;
   }
 
   /**

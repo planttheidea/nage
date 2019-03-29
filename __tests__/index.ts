@@ -49,6 +49,20 @@ describe('default pool', () => {
     expect(object).toEqual({});
   });
 
+  it('will reserve multiple objects', () => {
+    const pool = createNage();
+
+    const objects = pool.reserveN(5);
+
+    // @ts-ignore
+    expect(pool._stack).toEqual([]);
+    expect(pool.size).toEqual(5);
+    expect(pool.reserved).toEqual(5);
+    expect(pool.available).toEqual(0);
+
+    expect(objects).toEqual([{}, {}, {}, {}, {}]);
+  });
+
   it('will create a new object when trying to reserve with none remaining', () => {
     const pool = createNage();
 
@@ -97,6 +111,34 @@ describe('default pool', () => {
     expect(pool.size).toEqual(1);
     expect(pool.reserved).toEqual(0);
     expect(pool.available).toEqual(1);
+  });
+
+  it('will release multiple reserved objects', () => {
+    const pool = createNage();
+
+    // @ts-ignore
+    expect(pool._stack).toEqual([{}]);
+    expect(pool.size).toEqual(1);
+    expect(pool.reserved).toEqual(0);
+    expect(pool.available).toEqual(1);
+
+    const size = 5;
+
+    const objects = pool.reserveN(size);
+
+    // @ts-ignore
+    expect(pool._stack).toEqual([]);
+    expect(pool.size).toEqual(size);
+    expect(pool.reserved).toEqual(size);
+    expect(pool.available).toEqual(0);
+
+    pool.releaseN(objects);
+
+    // @ts-ignore
+    expect(pool._stack).toEqual(objects);
+    expect(pool.size).toEqual(size);
+    expect(pool.reserved).toEqual(0);
+    expect(pool.available).toEqual(size);
   });
 
   it('will reset the pool of objects when no initial size', () => {
