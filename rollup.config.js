@@ -14,6 +14,7 @@ const UMD_CONFIG = {
   },
   plugins: [
     typescript({
+      // eslint-disable-next-line global-require
       typescript: require('typescript'),
     }),
   ],
