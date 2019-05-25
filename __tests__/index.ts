@@ -35,6 +35,62 @@ describe('default pool', () => {
     expect(pool._stack).toEqual([{}, {}, {}]);
   });
 
+  it('will create a pool with an initial size of 0', () => {
+    const pool = createNage({
+      initialSize: 0,
+    });
+
+    expect(pool instanceof Nage).toBe(true);
+
+    // @ts-ignore
+    expect(pool._stack).toEqual([]);
+  });
+
+  it('will reserve an object', () => {
+    const pool = createNage();
+
+    const object = pool.reserve();
+
+    // @ts-ignore
+    expect(pool._stack).toEqual([]);
+    expect(pool.size).toEqual(1);
+    expect(pool.reserved).toEqual(1);
+    expect(pool.available).toEqual(0);
+
+    expect(object).toEqual({});
+  });
+
+  it('not release the object back to the pool if the max size is reached', () => {
+    const pool = createNage({
+      initialSize: 3,
+      maxSize: 2,
+    });
+
+    expect(pool instanceof Nage).toBe(true);
+
+    // @ts-ignore
+    expect(pool._stack).toEqual([{}, {}]);
+
+    const reservations = new Array(3).fill('foo').map(() => pool.reserve());
+
+    reservations.forEach(reservation => pool.release(reservation));
+
+    // @ts-ignore
+    expect(pool._stack).toEqual([{}, {}]);
+  });
+
+  it('will cap a pool with an initial size and a max size', () => {
+    const pool = createNage({
+      initialSize: 3,
+      maxSize: 2,
+    });
+
+    expect(pool instanceof Nage).toBe(true);
+
+    // @ts-ignore
+    expect(pool._stack).toEqual([{}, {}]);
+  });
+
   it('will reserve an object', () => {
     const pool = createNage();
 

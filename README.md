@@ -10,6 +10,7 @@ Efficient, tiny object pool
 - [Pool options](#pool-options)
   - [create](#create)
   - [initialSize](#initialsize)
+  - [maxSize](#maxsize)
   - [name](#name)
   - [onReserve](#onreserve)
   - [onRelease](#onrelease)
@@ -114,6 +115,18 @@ const pool = nage({ initialSize: 10 });
 ```
 
 The number of objects to prepopulate the pool with. If you expect a number of objects to be used in parallel, it is advised to prepopulate the pool with the number appropriate for the use-case.
+
+#### maxSize
+
+_defaults to Infinity_
+
+```typescript
+const pool = nage({ maxSize: 10 });
+```
+
+The maximum number of objects that will live in the pool. If you have reserved an object from the pool and try to release it back to the pool, it will allow the object to be garbage collected.
+
+**NOTE**: If you provide an `initialSize` that is larger than the `maxSize`, the `maxSize` will be used as the `initialSize`.
 
 #### name
 
