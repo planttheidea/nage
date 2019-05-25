@@ -15,6 +15,7 @@ declare namespace Nage {
   export type Options = {
     create?: Creator;
     initialSize?: number;
+    maxSize?: number;
     name?: number | string | symbol;
     onRelease?: Handler;
     onReserve?: Handler;

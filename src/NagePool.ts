@@ -23,6 +23,7 @@ class NagePool {
 
   readonly create: Nage.Creator;
   readonly initialSize: number;
+  readonly maxSize: number;
   readonly name: number | string | symbol;
   readonly onRelease: Nage.Handler;
   readonly onReserve: Nage.Handler;
@@ -40,6 +41,7 @@ class NagePool {
   constructor({
     create = getEmptyObject,
     initialSize = 1,
+    maxSize = Infinity,
     name,
     onRelease,
     onReserve,
@@ -81,12 +83,15 @@ class NagePool {
       }
     }
 
-    this.initialSize = initialSize;
+    const computedInitialSize = Math.min(initialSize, maxSize);
 
-    if (initialSize) {
+    this.initialSize = computedInitialSize;
+    this.maxSize = maxSize;
+
+    if (computedInitialSize) {
       const { _stack: stack } = this;
 
-      for (let index = 0; index < initialSize; ++index) {
+      for (let index = 0; index < computedInitialSize; ++index) {
         stack.push(this._generate());
       }
     }
@@ -155,7 +160,7 @@ class NagePool {
 
     const { onRelease, _stack: stack } = this;
 
-    if (stack.indexOf(entry) === -1) {
+    if (stack.length < this.maxSize && stack.indexOf(entry) === -1) {
       if (onRelease) {
         onRelease(entry);
       }
