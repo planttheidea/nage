@@ -35,6 +35,17 @@ describe('default pool', () => {
     expect(pool._stack).toEqual([{}, {}, {}]);
   });
 
+  it('will create a pool with an initial size of 0', () => {
+    const pool = createNage({
+      initialSize: 0,
+    });
+
+    expect(pool instanceof Nage).toBe(true);
+
+    // @ts-ignore
+    expect(pool._stack).toEqual([]);
+  });
+
   it('will reserve an object', () => {
     const pool = createNage();
 
