@@ -12,8 +12,10 @@
   "rules": {
     "consistent-return": 0,
     "lines-between-class-members": 0,
+    "no-bitwise": 0,
     "no-plusplus": 0,
     "no-underscore-dangle": 0,
-    "object-curly-newline": 0
+    "object-curly-newline": 0,
+    "operator-linebreak": 0
   }
 }

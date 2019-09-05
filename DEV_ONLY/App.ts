@@ -1,8 +1,15 @@
+/* eslint-disable no-console */
+
 import nage from '../src';
 
 console.time();
 
-const pool = nage({
+type Obj = {
+  foo?: string;
+  bar?: string;
+};
+
+const pool = nage<Obj>({
   initialSize: 10000,
   name: 'My Special Pool',
   onRelease(item) {
@@ -42,7 +49,7 @@ const used = pool.reserveN(55).map((entry, index) => {
   return entry;
 });
 
-console.log(pool.size, used.map(entry => ({ ...entry })));
+console.log(pool.size, used.map((entry) => ({ ...entry })));
 
 const toRelease = [];
 

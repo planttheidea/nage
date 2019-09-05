@@ -73,7 +73,7 @@ describe('default pool', () => {
 
     const reservations = new Array(3).fill('foo').map(() => pool.reserve());
 
-    reservations.forEach(reservation => pool.release(reservation));
+    reservations.forEach((reservation) => pool.release(reservation));
 
     // @ts-ignore
     expect(pool._stack).toEqual([{}, {}]);
@@ -444,52 +444,18 @@ describe('custom pool', () => {
   });
 });
 
-describe('error states in non-prod', () => {
-  it('will throw when create is not a function', () => {
-    // @ts-ignore
-    expect(() => createNage({ create: 'foo' })).toThrow();
-  });
-
-  it('will throw when onRelease is not a function', () => {
-    // @ts-ignore
-    expect(() => createNage({ onRelease: 'foo' })).toThrow();
-  });
-
-  it('will throw when onReserve is not a function', () => {
-    // @ts-ignore
-    expect(() => createNage({ onReserve: 'foo' })).toThrow();
-  });
-
-  it('will throw when onReset is not a function', () => {
-    // @ts-ignore
-    expect(() => createNage({ onReset: 'foo' })).toThrow();
-  });
-
-  it('will throw an error if the entry being released is not from the pool', () => {
-    const pool = createNage();
-
-    expect(() => pool.release({})).toThrow();
-  });
-});
-
-describe('error states in prod', () => {
+describe('error states', () => {
   // @ts-ignore
-  const original = process.env.NODE_ENV;
   const originalConsole = console.error;
 
   const mockConsole = jest.fn();
 
   beforeEach(() => {
-    // @ts-ignore
-    process.env.NODE_ENV = 'production';
-
     console.error = mockConsole;
   });
 
   afterEach(() => {
     // @ts-ignore
-    process.env.NODE_ENV = original;
-
     mockConsole.mockReset();
 
     console.error = originalConsole;

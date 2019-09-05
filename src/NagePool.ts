@@ -1,4 +1,5 @@
 import { getEmptyObject, notifyError } from './utils';
+import WeakMap from './weakMap';
 
 /**
  * @constant EMPTY_OBJECT an empty object, to avoid unnecessary garbage when creating new pools
@@ -15,19 +16,19 @@ let timeBasis = Date.now() % 1e9;
  *
  * @classdesc pool objects, generating new ones only when necessary
  */
-class NagePool {
-  protected _entries: WeakMap<Nage.Entry, string>;
+class NagePool<Pooled extends {} = Nage.Entry> {
+  protected _entries: WeakMap<Pooled, string>;
   protected _generated: number;
   protected _id: string;
-  protected _stack: Nage.Entry[];
+  protected _stack: Pooled[];
 
-  readonly create: Nage.Creator;
+  readonly create: Nage.Creator<Pooled>;
   readonly initialSize: number;
   readonly maxSize: number;
   readonly name: number | string | symbol;
-  readonly onRelease: Nage.Handler;
-  readonly onReserve: Nage.Handler;
-  readonly onReset: Nage.ResetHandler;
+  readonly onRelease: Nage.Handler<Pooled>;
+  readonly onReserve: Nage.Handler<Pooled>;
+  readonly onReset: Nage.ResetHandler<Pooled>;
 
   /**
    * @constructor
@@ -46,9 +47,8 @@ class NagePool {
     onRelease,
     onReserve,
     onReset,
-  }: Nage.Options = EMPTY_OBJECT) {
-    this._entries = new WeakMap();
-    // eslint-disable-next-line no-bitwise
+  }: Nage.Options<Pooled> = EMPTY_OBJECT) {
+    this._entries = new WeakMap<Pooled, string>();
     this._id = `nage_${timeBasis++}_${(Math.random() * 1e9) >>> 0}`;
     this._stack = [];
     this._generated = 0;
@@ -153,7 +153,7 @@ class NagePool {
    *
    * @param entry the entry to release back to the pool
    */
-  release(entry: Nage.Entry) {
+  release(entry: Pooled) {
     if (this._entries.get(entry) !== this._id) {
       return notifyError('Object passed is not part of this pool.');
     }
@@ -178,8 +178,8 @@ class NagePool {
    *
    * @param entries the entries to release back to the pool
    */
-  releaseN(entries: Nage.Entry[]) {
-    entries.forEach(entry => this.release(entry));
+  releaseN(entries: Pooled[]) {
+    entries.forEach((entry) => this.release(entry));
   }
 
   /**
@@ -192,7 +192,7 @@ class NagePool {
    * @param numberOfEntries the number of _entries to reserve
    * @returns a pool entry
    */
-  reserve() {
+  reserve(): Pooled {
     const { onReserve, _stack: stack } = this;
 
     const reserved = stack.length ? stack.pop() : this._generate();
@@ -214,7 +214,7 @@ class NagePool {
    * @param size the number of entries to reserve
    * @returns an array of pool entries
    */
-  reserveN(size: number) {
+  reserveN(size: number): Pooled[] {
     const reservations = new Array(size);
 
     for (let index = 0; index < size; ++index) {

@@ -6,8 +6,8 @@
  *
  * @returns an empty object
  */
-export function getEmptyObject() {
-  return {};
+export function getEmptyObject<Pooled extends {} = Nage.Entry>() {
+  return {} as Pooled;
 }
 
 /**
@@ -22,10 +22,8 @@ export function getEmptyObject() {
  * @param message the message to notify with
  */
 export function notifyError(message: string) {
-  if (process.env.NODE_ENV !== 'production') {
-    throw new Error(message);
+  if (console) {
+    // eslint-disable-next-line no-console
+    console.error(message);
   }
-
-  // eslint-disable-next-line no-console
-  console.error(message);
 }
