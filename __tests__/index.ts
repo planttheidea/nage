@@ -73,7 +73,7 @@ describe('default pool', () => {
 
     const reservations = new Array(3).fill('foo').map(() => pool.reserve());
 
-    reservations.forEach(reservation => pool.release(reservation));
+    reservations.forEach((reservation) => pool.release(reservation));
 
     // @ts-ignore
     expect(pool._stack).toEqual([{}, {}]);
