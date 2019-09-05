@@ -1,6 +1,6 @@
 /* globals describe,expect,it */
 
-import { WeakMapPolyfill } from '../src/entries';
+import { WeakMapPolyfill } from '../src/weakMap';
 
 describe('polyfill for WeakMap', () => {
   it('should create a map that stores reference to key', () => {

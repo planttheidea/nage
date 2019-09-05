@@ -55,6 +55,4 @@ export class WeakMapPolyfill<Key extends Nage.Entry, Value extends any> {
 const _WeakMap =
   typeof WeakMap !== 'undefined' ? WeakMap : ((WeakMapPolyfill as unknown) as WeakMapConstructor);
 
-export default function getEntries<Key extends {}, Value extends any>() {
-  return new _WeakMap<Key, Value>();
-}
+export default _WeakMap;

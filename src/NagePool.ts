@@ -1,5 +1,5 @@
-import getEntries from './entries';
 import { getEmptyObject, notifyError } from './utils';
+import WeakMap from './weakMap';
 
 /**
  * @constant EMPTY_OBJECT an empty object, to avoid unnecessary garbage when creating new pools
@@ -48,7 +48,7 @@ class NagePool<Pooled extends {} = Nage.Entry> {
     onReserve,
     onReset,
   }: Nage.Options<Pooled> = EMPTY_OBJECT) {
-    this._entries = getEntries<Pooled, string>();
+    this._entries = new WeakMap<Pooled, string>();
     this._id = `nage_${timeBasis++}_${(Math.random() * 1e9) >>> 0}`;
     this._stack = [];
     this._generated = 0;
