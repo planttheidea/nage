@@ -6,8 +6,8 @@
  *
  * @returns an empty object
  */
-export function getEmptyObject() {
-  return {};
+export function getEmptyObject<Pooled extends {} = Nage.Entry>() {
+  return {} as Pooled;
 }
 
 /**

@@ -9,8 +9,8 @@ import NagePool from './NagePool';
  * @param options the options to create the pool with
  * @returns the Nage instance
  */
-function nage(options?: Nage.Options) {
-  return new NagePool(options);
+function nage<Pooled extends {} = Nage.Entry>(options?: Nage.Options<Pooled>) {
+  return new NagePool<Pooled>(options);
 }
 
 export default nage;

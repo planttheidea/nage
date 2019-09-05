@@ -6,19 +6,19 @@ declare namespace Nage {
     [index: number]: any;
   };
 
-  export type Creator = () => Entry;
+  export type Creator<Pooled> = () => Pooled;
 
-  export type Handler = (entry: Entry) => void;
+  export type Handler<Pooled> = (entry: Pooled) => void;
 
-  export type ResetHandler = (stack: Entry[]) => void;
+  export type ResetHandler<Pooled> = (stack: Pooled[]) => void;
 
-  export type Options = {
-    create?: Creator;
+  export type Options<Pooled> = {
+    create?: Creator<Pooled>;
     initialSize?: number;
     maxSize?: number;
     name?: number | string | symbol;
-    onRelease?: Handler;
-    onReserve?: Handler;
-    onReset?: ResetHandler;
+    onRelease?: Handler<Pooled>;
+    onReserve?: Handler<Pooled>;
+    onReset?: ResetHandler<Pooled>;
   };
 }
