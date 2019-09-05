@@ -22,13 +22,13 @@ class NagePool<Pooled extends {} = Nage.Entry> {
   protected _id: string;
   protected _stack: Pooled[];
 
-  readonly create: Nage.Creator<Pooled>;
-  readonly initialSize: number;
-  readonly maxSize: number;
-  readonly name: number | string | symbol;
-  readonly onRelease: Nage.Handler<Pooled>;
-  readonly onReserve: Nage.Handler<Pooled>;
-  readonly onReset: Nage.ResetHandler<Pooled>;
+  readonly create: Nage.Options<Pooled>['create'];
+  readonly initialSize: Nage.Options<Pooled>['initialSize'];
+  readonly maxSize: Nage.Options<Pooled>['maxSize'];
+  readonly name: Nage.Options<Pooled>['name'];
+  readonly onRelease: Nage.Options<Pooled>['onRelease'];
+  readonly onReserve: Nage.Options<Pooled>['onReserve'];
+  readonly onReset: Nage.Options<Pooled>['onReset'];
 
   /**
    * @constructor
