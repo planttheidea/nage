@@ -22,10 +22,8 @@ export function getEmptyObject<Pooled extends {} = Nage.Entry>() {
  * @param message the message to notify with
  */
 export function notifyError(message: string) {
-  if (process.env.NODE_ENV !== 'production') {
-    throw new Error(message);
+  if (console) {
+    // eslint-disable-next-line no-console
+    console.error(message);
   }
-
-  // eslint-disable-next-line no-console
-  console.error(message);
 }
