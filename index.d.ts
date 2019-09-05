@@ -6,31 +6,35 @@ declare namespace Nage {
     [index: number]: any;
   };
 
-  export type Creator = () => Entry;
+  export type Creator<Pooled> = () => Pooled;
 
-  export type Handler = (entry: Entry) => void;
+  export type Handler<Pooled> = (entry: Pooled) => void;
 
-  export type ResetHandler = (stack: Entry[]) => void;
+  export type ResetHandler<Pooled> = (stack: Pooled[]) => void;
 
-  export type Options = {
-    create?: Creator;
+  export type Options<Pooled> = {
+    create?: Creator<Pooled>;
     initialSize?: number;
-    onRelease?: Handler;
-    onReserve?: Handler;
-    onReset?: ResetHandler;
+    maxSize?: number;
+    name?: number | string | symbol;
+    onRelease?: Handler<Pooled>;
+    onReserve?: Handler<Pooled>;
+    onReset?: ResetHandler<Pooled>;
   };
 }
 
-declare interface NagePool {
-  constructor(options: Nage.Options): NagePool;
+declare interface NagePool<Pooled> {
+  constructor(options: Nage.Options<Pooled>): NagePool<Pooled>;
 
   available: number;
   reserved: number;
   size: number;
 
-  release(entry: Nage.Entry): void;
-  reserve(): Nage.Entry;
+  release(entry: Pooled): void;
+  releaseN(entries: Pooled[]): void;
+  reserve(): Pooled;
+  reserveN(size: number): Pooled[];
   reset(): void;
 }
 
-export default function nage(options?: Nage.Options): NagePool;
+export default function nage<Pooled>(options?: Nage.Options<Pooled>): NagePool<Pooled>;
